@@ -1,5 +1,19 @@
 /// <reference types="../@types/jquery" />
 
+//-----------lodding-------------------------------
+$(function () {
+
+    search('s', ' ').then(() => {
+        $(".inner-loading-screen").fadeOut(300)
+        $('#lodding').fadeOut(1700, function () {
+            $('#lodding').slideUp(1700, function () {
+                $('body').css('overflow', 'auto');
+                $('#lodding').remove();
+            })
+        })
+    })
+})
+//-------------------------------------------------------
 //------------navbar close-------------------
 function close() {
     let widthNavber = $('#nav .navbar_hide_show').outerWidth();
@@ -152,6 +166,10 @@ function searchContact() {
     document.getElementById('mainItem').innerHTML = cols;
 }
 ///-----------------------------------------------------------------------
+
+
+
+
 
 // -----------------------------contact-------------------------
 let submitBtn ;
