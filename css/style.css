@@ -1,0 +1,77 @@
+:root {
+  --main-color: #0d0d0d;
+}
+
+body {
+  background-color: var(--main-color);
+}
+
+/* ----------navbar------------------ */
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#nav .navbar {
+  background-color: var(--main-color);
+  color: white;
+  text-align: start;
+  padding: 30px 40px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#nav .navbar .links {
+  overflow: hidden;
+  top: 500px;
+}
+
+#nav .navbar .links a {
+  text-decoration: none;
+  color: white;
+  padding-block: 10px;
+  font-size: 22px;
+  top: 300px;
+}
+
+#nav .navbar .links {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: start;
+}
+#nav .navbar .contact i {
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+#nav .navbar .contact p {
+  font-size: 20px;
+}
+#nav .open_nav {
+  background-color: white;
+  color: var(--main-color);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+#nav .open_nav img {
+  width: 60px;
+}
+#nav .open_nav .icon_open_close {
+  font-size: 50px;
+  cursor: pointer;
+}
+
+#nav .open_nav .icon_open_close ~ div i {
+  cursor: pointer;
+}
+
