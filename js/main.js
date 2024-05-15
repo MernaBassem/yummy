@@ -35,6 +35,123 @@ $('#nav .open_nav .icon_open_close .open_close').on('click', function () {
 
 })
 
+// -------------------------------------------------
+
+function InputSearchName(value) {
+    var NameInput = value;
+    search('s', NameInput);
+}
+
+function InputSearchFirstName(value) {
+    var firstLetter = value;
+    if (firstLetter === '') {
+        firstLetter = 'a';
+    }
+
+    if (firstLetter.length >= 1) {
+        search('f', firstLetter);
+    }
+}
+
+var DataByName = [];
+
+
+async function search(type, value) {
+    DataByName = [];
+    $(".inner-loading-screen").fadeIn(300)
+
+    var http = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?${type}=${value}`);
+    var response = await http.json();
+
+    if (response && response.meals) {
+        DataByName = response.meals;
+    } else {
+        DataByName = [];
+        console.error('Invalid or empty JSON response');
+    }
+
+    if (type == 's' && value == ' ') {
+        displayDataSearch();
+    $(".inner-loading-screen").fadeOut(300)
+
+
+    } else {
+        displaySearch();
+    $(".inner-loading-screen").fadeOut(300)
+
+    }
+}
+//------------------------------all display ------------
+function displayDataSearch() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+            <div class="col-lg-3 col-md-6 col-12 h-100 rounded section-meal" style="cursor: pointer;" onclick='Detail(${DataByName[i].idMeal})'>
+                <div class="position-relative overflow-hidden rounded">
+                    <img src="${DataByName[i].strMealThumb}" class="rounded w-100 h-100" alt="meal" />
+                    <div class="layer rounded d-flex justify-content-center align-items-start">
+                        <h2>${DataByName[i].strMeal}</h2>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    document.getElementById('mainItem').innerHTML = cols;
+}
+
+
+//-------------------display in search-------------------
+function displaySearch() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+            <div class="col-lg-3 col-md-6 col-12 h-100 rounded section-meal" style="cursor: pointer;" onclick='Detail(${DataByName[i].idMeal})'>
+                <div class="position-relative overflow-hidden rounded">
+                    <img src="${DataByName[i].strMealThumb}" class="rounded w-100 h-100" alt="meal" />
+                    <div class="layer rounded d-flex justify-content-center align-items-start">
+                        <h2>${DataByName[i].strMeal}</h2>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    document.getElementById('SearchName').innerHTML = cols;
+}
+// ----------- function search -------------------
+function searchContact() {
+    var cols = `
+        <div id="search">
+            <div class="container">
+                <div class="row gy-3 py-5">
+                    <div class="col-md-6 col-12">
+                        <input
+                            type="text"
+                            placeholder="Search By Name"
+                            id="InputSearchName"
+                            oninput="InputSearchName(this.value)"
+                            class="rounded text-white w-100 bg-transparent"
+                        />
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <input
+                            type="text"
+                            id="InputSearchFirstName"
+                            oninput="InputSearchFirstName(this.value)"
+                            maxlength="1"
+                            placeholder="Search By First Latter"
+                            class="rounded text-white w-100 bg-transparent"
+                        />
+                    </div>
+                </div>
+                <div class="row meal gy-4 py-5" id="SearchName">
+                    <!-- Display search results here -->
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('mainItem').innerHTML = cols;
+}
+///-----------------------------------------------------------------------
 
 // -----------------------------contact-------------------------
 let submitBtn ;
