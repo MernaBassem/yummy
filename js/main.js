@@ -167,10 +167,153 @@ function searchContact() {
 }
 ///-----------------------------------------------------------------------
 
+//  ------------------------------category API------------------------------
+
+async function category() {
+    DataByName = [];
+    $(".inner-loading-screen").fadeIn(300)
+
+    var http = await fetch(`https://www.themealdb.com/api/json/v1/1/categories.php`);
+    var response = await http.json();
+
+    if (response && response.categories) {
+        DataByName = response.categories;
+    } else {
+        DataByName = []
+        console.error('Invalid or empty JSON response');
+    }
+
+    displayDataCategory();
+    $(".inner-loading-screen").fadeOut(300)
+
+}
+// ----------------display in category----------------
+function displayDataCategory() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+            <div class="col-lg-3 col-md-6 col-12 h-100 rounded section-meal" style="cursor: pointer;" onclick="filterDisplay('c','${DataByName[i].strCategory}')">
+                <div class="position-relative overflow-hidden rounded">
+                    <img src="${DataByName[i].strCategoryThumb}" class="rounded w-100 h-100" alt="meal" />
+                    <div class="layer rounded">
+                        <h2>${DataByName[i].strCategory}</h2>
+                        <p class='pt-3 px-2'>${DataByName[i].strCategoryDescription.split(" ").slice(0, 20).join(" ")}</p>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    document.getElementById('mainItem').innerHTML = cols;
+}
+
+// -------------------- area and Ingredients ApI ----------------------
+async function list(type) {
+    DataByName = [];
+    $(".inner-loading-screen").fadeIn(300)
+
+    try {
+        var http = await fetch(`https://www.themealdb.com/api/json/v1/1/list.php?${type}='list'`);
+        var response = await http.json();
+
+        if (response && response.meals) {
+            if (type == 'i') {
+                DataByName = response.meals.slice(0, 24);
+            }
+            else if (type == 'a') {
+                DataByName = response.meals;
+            }
+
+        } else {
+            DataByName = [];
+            console.error('Invalid or empty JSON response');
+        }
+
+    } catch (error) {
+        console.error('Error fetching or parsing data:', error);
+    }
+    if (type == 'a') {
+        displayDataArea();
+    $(".inner-loading-screen").fadeOut(300)
+
+    } else if (type == 'i') {
+        displayDataIngredients();
+    $(".inner-loading-screen").fadeOut(300)
+
+    }
+
+}
+
+// ----------------display in Area----------------
+function displayDataArea() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+        <div class="col-lg-3 col-md-6 col-12 d-flex flex-column text-light justify-content-center align-items-center h-100 rounded section-area" style="cursor: pointer;" onclick="filterDisplay('a','${DataByName[i].strArea}')">
+            <i class="fa-solid fa-house-laptop py-3"></i>
+            <h2>${DataByName[i].strArea}</h2>
+        </div>`;
+    }
+
+    document.getElementById('mainItem').innerHTML = cols;
+}
 
 
 
+//--------------------display in ingredients --------------------
+function displayDataIngredients() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        if (DataByName[i].strDescription === 'null') {
+        } else {
+            cols += `
+                <div class="col-lg-3 col-md-6 col-12 d-flex flex-column text-light justify-content-center align-items-center h-100 rounded section-area" onclick="filterDisplay('i','${DataByName[i].strIngredient}')" style="cursor: pointer;">
+                    <i class="fa-solid fa-drumstick-bite py-3"></i>
+                    <h2>${DataByName[i].strIngredient}</h2>
+                    <p class="text-center py-2 fs-5">
+                        ${DataByName[i].strDescription.split(" ").slice(0, 20).join(" ")}
+                    </p>
+                </div>`;
+        }
+    }
 
+    document.getElementById('mainItem').innerHTML = cols;
+}
+
+
+//-------------------give api area ---------------
+
+async function filterDisplay(type, area) {
+    DataByName = [];
+    $(".inner-loading-screen").fadeIn(300)
+    var http = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?${type}=${area}`)
+    var response = await http.json();
+    if (response && response.meals) {
+        DataByName = response.meals;
+    } else {
+        DataByName = [];
+        console.error('Invalid or empty JSON response');
+    }
+    displayDataAfterFilter();
+    $(".inner-loading-screen").fadeOut(300)
+}
+// ----------------- filter -----------------------
+
+function displayDataAfterFilter() {
+    var cols = '';
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+            <div class="col-lg-3 col-md-6 col-12 h-100 rounded section-meal" style="cursor: pointer;" onclick='Detail(${DataByName[i].idMeal})'>
+                <div class="position-relative overflow-hidden rounded">
+                    <img src="${DataByName[i].strMealThumb}" class="rounded w-100 h-100" alt="meal" />
+                    <div class="layer rounded d-flex justify-content-center align-items-start">
+                        <h2>${DataByName[i].strMeal}</h2>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    document.getElementById('mainItem').innerHTML = cols;
+}
 // -----------------------------contact-------------------------
 let submitBtn ;
 
