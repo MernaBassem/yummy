@@ -314,6 +314,96 @@ function displayDataAfterFilter() {
 
     document.getElementById('mainItem').innerHTML = cols;
 }
+//----------------------------------
+
+// --------------------- API Detail ----------------
+
+async function Detail(id) {
+
+    DataByName = [];
+    $(".inner-loading-screen").fadeIn(300)
+    var http = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
+    var response = await http.json()
+    if (response && response.meals) {
+        DataByName = response.meals;
+    } else {
+        DataByName = []
+        console.error('Invalid or empty JSON response');
+    }
+    DisplayDtail();
+    $(".inner-loading-screen").fadeOut(300)
+}
+// ---------------- display detail ------------------
+function DisplayDtail() {
+    cols = ``;
+    for (var i = 0; i < DataByName.length; i++) {
+        cols += `
+            <div class="col-lg-4 col-md-12">
+                <img
+                    src="${DataByName[i].strMealThumb}"
+                    alt="meal"
+                    class="w-100 pb-3 img"
+                />
+                <h2 class="detail">${DataByName[i].strMeal}</h2>
+            </div>
+            <div class="col-lg-8 col-md-12 ps-4">
+                <h2 class="detail">Instructions</h2>
+                <p class="para">
+                    ${DataByName[i].strInstructions}
+                </p>
+                <h3><span class="fw-bold">Area :</span> ${DataByName[i].strArea}</h3>
+                <h3><span class="fw-bold">Category : </span>${DataByName[i].strCategory}</h3>
+                <h3><span class="fw-bold">Recipes : </span></h3>
+                <ul class="d-flex flex-wrap align-items-center avilableRecipes">
+        `;
+
+
+        for (let j = 1; j <= 20; j++) {
+            const measureProperty = `strMeasure${j}`;
+            const strIngredient = `strIngredient${j}`;
+            const measureValue = DataByName[i][measureProperty];
+            const IngredientValue = DataByName[i][strIngredient];
+
+            if (IngredientValue !== null && IngredientValue.trim() !== '') {
+                cols += `<li>${measureValue.trim()} ${IngredientValue.trim()}</li>`;
+            }
+        }
+
+        cols += `
+                </ul>
+                <h3>Tags :</h3>
+                <ul class="avilableTag d-flex flex-wrap align-items-center">
+        `;
+
+        if (DataByName[i].strTags && DataByName[i].strTags.trim() !== '') {
+            var tagsArray = DataByName[i].strTags.split(',');
+
+            tagsArray.forEach(function (tag) {
+                cols += `<li>${tag.trim()}</li>`;
+            });
+        }
+
+        cols += `
+                </ul>
+                <div class="info_lik">
+        `;
+
+        if (DataByName[i].strSource !== null) {
+            cols += `<a href="${DataByName[i].strSource}" target="_blank" class="source">Source</a>`;
+        }
+        if (DataByName[i].strYoutube !== null) {
+            cols += `<a href="${DataByName[i].strYoutube}" target="_blank" class="youtoub">Youtoub</a>`;
+        }
+
+        cols += `
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById('mainItem').innerHTML = cols;
+}
+
 // -----------------------------contact-------------------------
 let submitBtn ;
 
